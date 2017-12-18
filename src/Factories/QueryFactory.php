@@ -45,8 +45,11 @@ class QueryFactory
         foreach ($this->criteria as $criterion) {
             /** @var CriteriaInterface $criterion */
             $criterion = Instance::ensure($criterion, CriteriaInterface::class);
-            if ($criterion instanceof Model && (!$criterion->load($params) || !$criterion->validate())) {
-                continue;
+            if ($criterion instanceof Model) {
+                $criterion->load($params);
+                if (!$criterion->validate()) {
+                    continue;
+                }
             }
             $criterion->apply($query);
         }
