@@ -33,6 +33,7 @@ class AggregationFactory
 
         $query->limit = null;
         $query->offset = null;
+        $query->orderBy = null;
 
         $row = $query
             ->select(array_merge($totalConfig, ['count' => 'count(*)',]))
