@@ -7,6 +7,7 @@ namespace Horat1us\Yii\Criteria;
 use Horat1us\Yii\Criteria\Entities\SortEntity;
 use Horat1us\Yii\Criteria\Interfaces\CriteriaInterface;
 use yii\base\Model;
+use yii\db\Connection;
 use yii\db\Query;
 use yii\validators\EachValidator;
 
@@ -24,6 +25,15 @@ class SortCriteria extends Model implements CriteriaInterface
      * @see getSortKeys()
      */
     public $sortKeys;
+
+    /** @var Connection */
+    protected $connection;
+
+    public function __construct(Connection $connection, array $config = [])
+    {
+        parent::__construct($config);
+        $this->connection = $connection;
+    }
 
     public function rules()
     {
@@ -64,13 +74,15 @@ class SortCriteria extends Model implements CriteriaInterface
             return in_array($field, $sortKeys);
         });
 
-        $expression = '';
+        $order = [];
         foreach ($fields as $field) {
-            $sort = $field->isDesc() ? 'desc' : 'asc';
-            $expression .= "{$field->getField()} {$sort}";
+            /* using brackets to prevent quoting field names that contains dot */
+            $order[$this->connection->schema->quoteSimpleColumnName($field->getField())] = $field->isDesc()
+                ? SORT_DESC
+                : SORT_ASC;
         }
 
-        return $query->orderBy($expression);
+        return $query->orderBy($order);
     }
 
     /**

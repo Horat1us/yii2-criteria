@@ -41,3 +41,19 @@ $factory->apply(/* may be request from frontend */ [
 ]);
 
 ```
+
+
+## Configuring project
+You need to configure your DI container to give `yii\db\Connection` singleton instance
+to constructor of SortCriteria 
+```php
+<?php
+
+\Yii::$container->setSingleton(
+    \yii\db\Connection::class,
+    function() {
+        // You may also add array definitions instead of using global object
+        return \Yii::$app->db;
+    }
+);
+```
