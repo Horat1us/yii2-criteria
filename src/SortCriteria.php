@@ -29,12 +29,12 @@ class SortCriteria extends Model implements CriteriaInterface
     {
         return [
             ['fields', 'required',],
-            ['fields', EachValidator::class, 'rule' => function ($field) {
+            ['fields', EachValidator::class, 'rule' => [function ($field) {
                 if (is_string($field) || (is_array($field) && array_key_exists('id', $field))) {
                     return;
                 }
                 $this->addError('fields', 'One of fields is invalid');
-            }],
+            }]],
         ];
     }
 
@@ -79,7 +79,8 @@ class SortCriteria extends Model implements CriteriaInterface
      *
      * @return string[] with value as sort key, or key as sort key alias and value as real sort key
      */
-    protected function getSortKeys(): array {
+    protected function getSortKeys(): array
+    {
         return $this->sortKeys;
     }
 }
