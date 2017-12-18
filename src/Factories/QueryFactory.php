@@ -62,10 +62,10 @@ class QueryFactory
     }
 
     /**
-     * @param string $criteria
+     * @param string|array|CriteriaInterface $criteria
      * @return $this
      */
-    public function push(string $criteria): self
+    public function push($criteria): self
     {
         $this->criteria[] = $criteria;
         return $this;

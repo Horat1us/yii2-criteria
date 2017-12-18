@@ -15,10 +15,16 @@ use yii\validators\SafeValidator;
  * Class SearchCriteria
  * @package Horat1us\Yii\Criteria
  */
-abstract class SearchCriteria extends Model implements CriteriaInterface
+class SearchCriteria extends Model implements CriteriaInterface
 {
     /** @var array[] */
     public $query;
+
+    /**
+     * @var string[]
+     * @see getSearchKeys()
+     */
+    public $searchKeys;
 
     /** @var SearchRuleFactory */
     protected $searchRuleFactory;
@@ -69,7 +75,9 @@ abstract class SearchCriteria extends Model implements CriteriaInterface
     }
 
     /**
-     * @return array
+     * @return string[] with value as search key, or key as search key alias and value as real search key
      */
-    abstract protected function getSearchKeys(): array;
+    protected function getSearchKeys(): array {
+        return $this->searchKeys;
+    }
 }

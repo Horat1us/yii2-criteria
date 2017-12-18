@@ -14,10 +14,16 @@ use yii\validators\EachValidator;
  * Class SortCriteria
  * @package Horat1us\Yii\Criteria
  */
-abstract class SortCriteria extends Model implements CriteriaInterface
+class SortCriteria extends Model implements CriteriaInterface
 {
     /** @var string|array|string[]|array[] */
     public $fields;
+
+    /**
+     * @var string[]
+     * @see getSortKeys()
+     */
+    public $sortKeys;
 
     public function rules()
     {
@@ -71,7 +77,9 @@ abstract class SortCriteria extends Model implements CriteriaInterface
      * Returns list of allowed keys for sorting
      * Also allows aliases for sorting.
      *
-     * @return array with value as sort key, or key as sort key alias and value as real sort key
+     * @return string[] with value as sort key, or key as sort key alias and value as real sort key
      */
-    abstract protected function getSortKeys(): array;
+    protected function getSortKeys(): array {
+        return $this->sortKeys;
+    }
 }

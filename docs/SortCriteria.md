@@ -21,6 +21,15 @@ $factory->push(new class extends SortCriteria {
     } 
 });
 
+// You can also use Yii2-way
+$factory->push([
+    'class' => SortCriteria::class,
+    'sortKeys' => [
+        'index', /* add string to allow sorting by key */
+        'some.frontend.key' => 'your_database_key', /* sort key aliasing */    
+    ],
+]);
+
 $factory->apply(/* may be request from frontend */ [
     'SortCriteria' => [
         'fields' => [

@@ -24,6 +24,15 @@ $factory->push(new class extends SearchCriteria {
     } 
 });
 
+// You can also use Yii2-way
+$factory->push([
+    'class' => SearchCriteria::class,
+    'searchKeys' => [
+        'index', /* add string to allow searching by key */
+        'some.frontend.key' => 'your_database_key', /* search key aliasing */    
+    ], 
+]);
+
 $factory->apply(/* may be request from frontend */ [
     'SearchCriteria' => [
         'query' => [
