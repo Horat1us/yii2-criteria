@@ -60,6 +60,27 @@ print_r($record->id, $_GET['IdCriteria']['id']); // true
 - [AggregationFactory](./docs/AggregationFactory.md)
 - [QueryFactory](./docs/QueryFactory.md)
 
+## Tips
+To set default params for criteria (for example, PaginationCriteria) configure your `yii\db\Container`
+in `bootstrap.php` file:
+```php
+<?php
+
+use Horat1us\Yii\Criteria\PaginationCriteria;
+
+Yii::$container->set(
+    PaginationCriteria::class,
+    [
+        'class' => PaginationCriteria::class,
+        
+        'page' => 1,
+        'pageSize' => 10,
+        
+        'allowedPageSize' => [1, 5, 10,],
+    ]
+);
+```
+
 ## Contributors
 [Alexander <horat1us> Letnikow](mailto:reclamme@gmail.com)
 
