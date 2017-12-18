@@ -70,7 +70,7 @@ class SortCriteria extends Model implements CriteriaInterface
             $expression .= "{$field->getField()} {$sort}";
         }
 
-        return $query->orderBy($query);
+        return $query->orderBy($expression);
     }
 
     /**
