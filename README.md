@@ -54,6 +54,7 @@ print_r($record->id, $_GET['IdCriteria']['id']); // true
 ## Pre-cooked criteria
 - [SortCriteria](./docs/SortCriteria.md)
 - [SearchCriteria](./docs/SearchCriteria.md)
+- [PaginationCriteria](./docs/PaginationCriteria.md)
 
 ## Contributors
 [Alexander <horat1us> Letnikow](mailto:reclamme@gmail.com)

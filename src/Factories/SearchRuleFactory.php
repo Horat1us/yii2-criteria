@@ -6,6 +6,10 @@ namespace Horat1us\Yii\Criteria\Factories;
 
 use Horat1us\Yii\Criteria\Entities\SearchRuleEntity;
 
+/**
+ * Class SearchRuleFactory
+ * @package Horat1us\Yii\Criteria\Factories
+ */
 class SearchRuleFactory
 {
     /**

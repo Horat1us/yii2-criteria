@@ -35,9 +35,10 @@ class SearchRuleEntity
      */
     public function __construct(string $field, string $value, string $operator = self::OPERATOR_EQUALS)
     {
-        $this->operator = $operator;
-        $this->value = $value;
-        $this->field = $field;
+        $this
+            ->setField($field)
+            ->setValue($value)
+            ->setOperator($operator);
     }
 
     /**
@@ -71,6 +72,26 @@ class SearchRuleEntity
     public function setField(string $field): SearchRuleEntity
     {
         $this->field = $field;
+        return $this;
+    }
+
+    /**
+     * @param string $operator
+     * @return SearchRuleEntity
+     */
+    public function setOperator(string $operator = self::OPERATOR_EQUALS): SearchRuleEntity
+    {
+        $this->operator = $operator;
+        return $this;
+    }
+
+    /**
+     * @param string $value
+     * @return SearchRuleEntity
+     */
+    public function setValue(string $value): SearchRuleEntity
+    {
+        $this->value = $value;
         return $this;
     }
 }
