@@ -56,6 +56,10 @@ print_r($record->id, $_GET['IdCriteria']['id']); // true
 - [SearchCriteria](./docs/SearchCriteria.md)
 - [PaginationCriteria](./docs/PaginationCriteria.md)
 
+## Factories
+- [AggregationFactory](./docs/AggregationFactory.md)
+- [QueryFactory](./docs/QueryFactory.md)
+
 ## Contributors
 [Alexander <horat1us> Letnikow](mailto:reclamme@gmail.com)
 
