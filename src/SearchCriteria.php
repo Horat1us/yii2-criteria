@@ -40,7 +40,6 @@ class SearchCriteria extends Model implements CriteriaInterface
         return [
             ['query', 'required',],
             ['query', SafeValidator::class],
-            ['query', 'each', 'rule' => ['each', 'rule' => 'safe',]],
         ];
     }
 

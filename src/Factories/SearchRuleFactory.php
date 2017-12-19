@@ -41,6 +41,6 @@ class SearchRuleFactory
             throw new \InvalidArgumentException("Search rule first element should be an operator", 1);
         }
 
-        return new SearchRuleEntity($searchOperator, $searchRule[1], $searchRule[2]);
+        return new SearchRuleEntity($searchRule[1], $searchRule[2], $searchOperator);
     }
 }
