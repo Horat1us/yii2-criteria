@@ -5,34 +5,29 @@ namespace Horat1us\Yii\Criteria\Factories;
 
 use Horat1us\Yii\Criteria\Interfaces\CriteriaInterface;
 
+use yii\base\BaseObject;
+use yii\base\InvalidConfigException;
 use yii\base\Model;
+
 use yii\db\Query;
 use yii\di\Instance;
 
 /**
  * Class QueryFactory
  * @package Horat1us\Yii\Criteria\Factories
+ *
+ * @property-read CriteriaInterface[]|array[]|string[] $criteria
+ * @property-read Query $query
  */
-class QueryFactory
+class QueryFactory extends BaseObject
 {
     /** @var Query */
     protected $query;
 
     /**
-     * @var string[]|CriteriaInterface[]
+     * @var CriteriaInterface[]
      */
     protected $criteria;
-
-    /**
-     * QueryFactory constructor.
-     * @param Query $query
-     * @param array $criteria
-     */
-    public function __construct(Query $query, array $criteria = [])
-    {
-        $this->query = $query;
-        $this->criteria = $criteria;
-    }
 
     /**
      * @param array $params
@@ -65,12 +60,29 @@ class QueryFactory
     }
 
     /**
-     * @param string|array|CriteriaInterface $criteria
-     * @return $this
+     * @param CriteriaInterface[]|array[]|string[] $criteria
+     * @see Instance::ensure()
      */
-    public function push($criteria): self
+    public function setCriteria(array $criteria = [])
     {
-        $this->criteria[] = $criteria;
+        foreach ($criteria as $criterion) {
+            $this->push($criterion);
+        }
+    }
+
+    /**
+     * @param string|array|CriteriaInterface $criterion
+     * @return $this
+     * @throws \InvalidArgumentException
+     */
+    public function push($criterion): self
+    {
+        try {
+            $this->criteria[] = Instance::ensure($criterion, CriteriaInterface::class);
+        } catch (InvalidConfigException $exception) {
+            throw new \InvalidArgumentException($exception->getMessage(), $exception->getCode(), $exception);
+        }
+
         return $this;
     }
 }
