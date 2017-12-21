@@ -5,21 +5,19 @@ namespace Horat1us\Yii\Criteria\Factories;
 
 use Horat1us\Yii\Criteria\Entities\AggregationEntity;
 
+use yii\base\BaseObject;
 use yii\db\Query;
 
 /**
  * Class AggregationFactory
  * @package Horat1us\Yii\Criteria\Factories
+ *
+ * @property-read Query $query
  */
-class AggregationFactory
+class AggregationFactory extends BaseObject
 {
     /** @var Query */
     protected $query;
-
-    public function __construct(Query $query)
-    {
-        $this->query = $query;
-    }
 
     /**
      * @param array $totalConfig
@@ -44,5 +42,15 @@ class AggregationFactory
         unset($row['count']);
 
         return new AggregationEntity($count, $row);
+    }
+
+    /**
+     * @param Query $query
+     * @return AggregationFactory
+     */
+    public function setQuery(Query $query): AggregationFactory
+    {
+        $this->query = $query;
+        return $this;
     }
 }
