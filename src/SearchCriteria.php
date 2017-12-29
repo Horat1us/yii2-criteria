@@ -8,6 +8,7 @@ use Horat1us\Yii\Criteria\Entities\SearchRuleEntity;
 use Horat1us\Yii\Criteria\Factories\SearchRuleFactory;
 use Horat1us\Yii\Criteria\Interfaces\CriteriaInterface;
 use yii\base\Model;
+use yii\db\Connection;
 use yii\db\Query;
 use yii\validators\SafeValidator;
 
@@ -29,10 +30,19 @@ class SearchCriteria extends Model implements CriteriaInterface
     /** @var SearchRuleFactory */
     protected $searchRuleFactory;
 
-    public function __construct(SearchRuleFactory $searchRuleFactory, array $config = [])
+    /** @var Connection */
+    protected $connection;
+
+    public function __construct(
+        Connection $connection,
+        SearchRuleFactory $searchRuleFactory,
+        array $config = []
+    )
     {
         parent::__construct($config);
+
         $this->searchRuleFactory = $searchRuleFactory;
+        $this->connection = $connection;
     }
 
     public function rules()
@@ -67,7 +77,11 @@ class SearchCriteria extends Model implements CriteriaInterface
 
         /** @var SearchRuleEntity $rule */
         foreach ($rules as $rule) {
-            $query->andWhere([$rule->getOperator(), $rule->getField(), $rule->getValue()]);
+            $query->andWhere([
+                $rule->getOperator(),
+                $this->connection->schema->quoteSimpleColumnName($rule->getField()),
+                $rule->getValue(),
+            ]);
         }
 
         return $query;
