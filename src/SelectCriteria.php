@@ -34,7 +34,7 @@ class SelectCriteria extends Model implements CriteriaInterface
         if ($query instanceof ActiveQuery) {
             /** @var ActiveRecord $record */
             $record = new $query->modelClass;
-            $attributes = $record->attributes;
+            $attributes = $record->attributes();
             $fields = array_filter(
                 $fields,
                 function (string $field) use ($attributes) {
