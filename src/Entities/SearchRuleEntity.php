@@ -16,6 +16,7 @@ class SearchRuleEntity
     const OPERATOR_SMALLER_OR_EQUALS = '<=';
     const OPERATOR_BIGGER_OR_EMAI = '>=';
     const OPERATOR_NOT_EQUAL = '<>';
+    const OPERATOR_LIKE = 'like';
 
     /** @var string */
     protected $operator;

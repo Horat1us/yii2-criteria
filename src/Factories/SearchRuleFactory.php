@@ -37,6 +37,7 @@ class SearchRuleFactory
             SearchRuleEntity::OPERATOR_SMALLER_OR_EQUALS,
             SearchRuleEntity::OPERATOR_BIGGER_OR_EMAI,
             SearchRuleEntity::OPERATOR_NOT_EQUAL,
+            SearchRuleEntity::OPERATOR_LIKE,
         ])) {
             throw new \InvalidArgumentException("Search rule first element should be an operator", 1);
         }
