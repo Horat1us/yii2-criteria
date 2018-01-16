@@ -82,7 +82,9 @@ class SearchRuleEntity
     public function setOperator(string $operator = self::OPERATOR_EQUALS): SearchRuleEntity
     {
         $this->operator = $operator;
-        $this->setValue($this->value); // Value validation
+        if (!is_null($this->value)) {
+            $this->setValue($this->value); // Repeat value validation
+        }
         return $this;
     }
 
