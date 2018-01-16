@@ -1,8 +1,6 @@
 <?php
 
-
 namespace Horat1us\Yii\Criteria\Entities;
-
 
 /**
  * Class SearchRuleEntity
@@ -17,6 +15,7 @@ class SearchRuleEntity
     const OPERATOR_BIGGER_OR_EMAI = '>=';
     const OPERATOR_NOT_EQUAL = '<>';
     const OPERATOR_LIKE = 'like';
+    const OPERATOR_IN = 'in';
 
     /** @var string */
     protected $operator;
@@ -37,9 +36,9 @@ class SearchRuleEntity
     public function __construct(string $field, string $value, string $operator = self::OPERATOR_EQUALS)
     {
         $this
+            ->setOperator($operator)
             ->setField($field)
-            ->setValue($value)
-            ->setOperator($operator);
+            ->setValue($value);
     }
 
     /**
@@ -83,15 +82,22 @@ class SearchRuleEntity
     public function setOperator(string $operator = self::OPERATOR_EQUALS): SearchRuleEntity
     {
         $this->operator = $operator;
+        $this->setValue($this->value); // Value validation
         return $this;
     }
 
     /**
-     * @param string $value
+     * @param string|array $value
      * @return SearchRuleEntity
      */
-    public function setValue(string $value): SearchRuleEntity
+    public function setValue($value): SearchRuleEntity
     {
+        if ($this->operator === static::OPERATOR_IN && !is_array($value)) {
+            throw new \InvalidArgumentException("Value have to be an array of operator is `in`");
+        } elseif (!is_scalar($value)) {
+            throw new \InvalidArgumentException("Value have to be scalar");
+        }
+
         $this->value = $value;
         return $this;
     }
