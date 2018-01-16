@@ -1,8 +1,6 @@
 <?php
 
-
 namespace Horat1us\Yii\Criteria;
-
 
 use Horat1us\Yii\Criteria\Interfaces\CriteriaInterface;
 use yii\base\Model;

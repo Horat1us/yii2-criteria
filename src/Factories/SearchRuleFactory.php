@@ -1,8 +1,6 @@
 <?php
 
-
 namespace Horat1us\Yii\Criteria\Factories;
-
 
 use Horat1us\Yii\Criteria\Entities\SearchRuleEntity;
 
@@ -13,7 +11,7 @@ use Horat1us\Yii\Criteria\Entities\SearchRuleEntity;
 class SearchRuleFactory
 {
     /**
-     * @param $searchRule
+     * @param array|SearchRuleEntity $searchRule
      * @return SearchRuleEntity
      *
      * @throws \InvalidArgumentException
@@ -22,6 +20,12 @@ class SearchRuleFactory
     {
         if ($searchRule instanceof SearchRuleEntity) {
             return $searchRule;
+        }
+
+        if (!is_array($searchRule)) {
+            throw new \InvalidArgumentException(
+                'SearchRule have to be instance of ' . SearchRuleEntity::class . ' or to be an array'
+            );
         }
 
         $searchRule = array_values($searchRule);
