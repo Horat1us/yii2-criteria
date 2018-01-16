@@ -30,10 +30,10 @@ class SearchRuleEntity
      * SearchRuleEntity constructor.
      *
      * @param string $field
-     * @param string $value
+     * @param string|array $value
      * @param string $operator
      */
-    public function __construct(string $field, string $value, string $operator = self::OPERATOR_EQUALS)
+    public function __construct(string $field, $value, string $operator = self::OPERATOR_EQUALS)
     {
         $this
             ->setOperator($operator)
