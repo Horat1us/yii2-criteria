@@ -23,7 +23,7 @@ class SearchRuleEntity
     /** @var string */
     protected $field;
 
-    /** @var string */
+    /** @var string|array */
     protected $value;
 
     /**
@@ -42,9 +42,9 @@ class SearchRuleEntity
     }
 
     /**
-     * @return string
+     * @return string|array
      */
-    public function getValue(): string
+    public function getValue()
     {
         return $this->value;
     }
@@ -96,7 +96,7 @@ class SearchRuleEntity
     {
         if ($this->operator === static::OPERATOR_IN && !is_array($value)) {
             throw new \InvalidArgumentException("Value have to be an array of operator is `in`");
-        } elseif (!is_scalar($value)) {
+        } elseif ($this->operator !== static::OPERATOR_IN && !is_scalar($value)) {
             throw new \InvalidArgumentException("Value have to be scalar");
         }
 
