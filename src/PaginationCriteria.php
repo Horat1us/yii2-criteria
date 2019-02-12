@@ -1,8 +1,6 @@
 <?php
 
-
 namespace Horat1us\Yii\Criteria;
-
 
 use Horat1us\Yii\Criteria\Interfaces\CriteriaInterface;
 use yii\base\Model;
@@ -43,9 +41,10 @@ class PaginationCriteria extends Model implements CriteriaInterface
     {
         $pagination = new Pagination([
             'totalCount' => $query->count(),
-            'page' => $this->page,
             'pageSize' => $this->pageSize,
+            'validatePage' => true,
         ]);
+        $pagination->setPage($this->page, true);
 
         return $query
             ->offset($pagination->offset)
