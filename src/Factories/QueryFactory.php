@@ -27,7 +27,7 @@ class QueryFactory extends BaseObject
     /**
      * @var CriteriaInterface[]
      */
-    protected $criteria;
+    protected $criteria = [];
 
     /**
      * @param array $params
