@@ -8,7 +8,6 @@ Using [composer](http://getcomposer.org):
 ```bash
 composer require horat1us/yii2-criteria
 ```
-*Requires PHP >= 7.0, yii2 >= 2.0.13*
 
 ## Usage
 
