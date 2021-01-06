@@ -1,33 +1,25 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Horat1us\Yii\Criteria;
 
 use Horat1us\Yii\Criteria\Interfaces\CriteriaInterface;
-use yii\base\Model;
-use yii\db\ActiveQuery;
-use yii\db\ActiveRecord;
-use yii\db\Connection;
-use yii\db\Query;
+use yii\base;
+use yii\db;
 
-/**
- * Class SelectCriteria
- * @package Horat1us\Yii\Criteria
- */
-class SelectCriteria extends Model implements CriteriaInterface
+class SelectCriteria extends base\Model implements CriteriaInterface
 {
     /** @var string[] */
-    public $fields;
+    public ?array $fields = null;
 
-    /** @var Connection */
-    protected $connection;
+    protected db\Connection $connection;
 
-    public function __construct(Connection $connection, array $config = [])
+    public function __construct(db\Connection $connection, array $config = [])
     {
         parent::__construct($config);
         $this->connection = $connection;
     }
 
-    public function rules()
+    public function rules(): array
     {
         return [
             ['fields', 'required',],
@@ -35,12 +27,12 @@ class SelectCriteria extends Model implements CriteriaInterface
         ];
     }
 
-    public function apply(Query $query): Query
+    public function apply(db\Query $query): db\Query
     {
         $fields = $this->fields;
 
-        if ($query instanceof ActiveQuery) {
-            /** @var ActiveRecord $record */
+        if ($query instanceof db\ActiveQuery) {
+            /** @var db\ActiveRecord $record */
             $record = new $query->modelClass;
             $attributes = $record->attributes();
             $fields = array_filter(
@@ -52,10 +44,9 @@ class SelectCriteria extends Model implements CriteriaInterface
             );
         }
 
+        $schema = $this->connection->schema;
         return $query->select(array_map(
-            function (string $field) {
-                return $this->connection->schema->quoteSimpleColumnName($field);
-            },
+            fn(string $field): string => $schema->quoteSimpleColumnName($field),
             $fields
         ));
     }
