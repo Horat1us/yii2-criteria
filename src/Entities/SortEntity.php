@@ -3,7 +3,6 @@
 
 namespace Horat1us\Yii\Criteria\Entities;
 
-
 /**
  * Class SortEntity
  * @package Horat1us\Yii\Criteria\Entities

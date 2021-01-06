@@ -1,44 +1,32 @@
-<?php
-
+<?php declare(strict_types=1);
 
 namespace Horat1us\Yii\Criteria;
-
 
 use Horat1us\Yii\Criteria\Entities\SearchRuleEntity;
 use Horat1us\Yii\Criteria\Factories\SearchRuleFactory;
 use Horat1us\Yii\Criteria\Interfaces\CriteriaInterface;
-use yii\base\Model;
-use yii\db\Connection;
-use yii\db\Query;
-use yii\validators\SafeValidator;
+use yii\base;
+use yii\db;
 
-/**
- * Class SearchCriteria
- * @package Horat1us\Yii\Criteria
- */
-class SearchCriteria extends Model implements CriteriaInterface
+class SearchCriteria extends base\Model implements CriteriaInterface
 {
-    /** @var array[] */
-    public $query;
+    public array $query = [];
 
     /**
      * @var string[]
      * @see getSearchKeys()
      */
-    public $searchKeys;
+    public array $searchKeys = [];
 
-    /** @var SearchRuleFactory */
-    protected $searchRuleFactory;
+    protected SearchRuleFactory $searchRuleFactory;
 
-    /** @var Connection */
-    protected $connection;
+    protected db\Connection $connection;
 
     public function __construct(
-        Connection $connection,
+        db\Connection $connection,
         SearchRuleFactory $searchRuleFactory,
         array $config = []
-    )
-    {
+    ) {
         parent::__construct($config);
 
         $this->searchRuleFactory = $searchRuleFactory;
@@ -49,11 +37,11 @@ class SearchCriteria extends Model implements CriteriaInterface
     {
         return [
             ['query', 'required',],
-            ['query', SafeValidator::class],
+            ['query', 'safe'],
         ];
     }
 
-    public function apply(Query $query): Query
+    public function apply(db\Query $query): db\Query
     {
         try {
             $rules = array_map(function ($plainSearchRule): SearchRuleEntity {
@@ -90,7 +78,8 @@ class SearchCriteria extends Model implements CriteriaInterface
     /**
      * @return string[] with value as search key, or key as search key alias and value as real search key
      */
-    protected function getSearchKeys(): array {
+    protected function getSearchKeys(): array
+    {
         return $this->searchKeys;
     }
 }

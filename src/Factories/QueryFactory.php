@@ -1,46 +1,42 @@
 <?php
 
-
 namespace Horat1us\Yii\Criteria\Factories;
 
 use Horat1us\Yii\Criteria\Interfaces\CriteriaInterface;
 
-use yii\base\BaseObject;
-use yii\base\InvalidConfigException;
-use yii\base\Model;
-
-use yii\db\Query;
-use yii\di\Instance;
+use yii\base;
+use yii\db;
+use yii\di;
 
 /**
  * Class QueryFactory
  * @package Horat1us\Yii\Criteria\Factories
  *
  * @property-read CriteriaInterface[]|array[]|string[] $criteria
- * @property-read Query $query
+ * @property-read db\Query $query
  */
-class QueryFactory extends BaseObject
+class QueryFactory extends base\BaseObject
 {
-    /** @var Query */
-    protected $query;
+    /** @var db\Query */
+    protected db\Query $query;
 
     /**
      * @var CriteriaInterface[]
      */
-    protected $criteria = [];
+    protected array $criteria = [];
 
     /**
      * @param array $params
-     * @return Query
+     * @return db\Query
      * @throws \yii\base\InvalidConfigException
      */
-    public function apply(array $params): Query
+    public function apply(array $params): db\Query
     {
         $query = clone $this->query;
         foreach ($this->criteria as $criterion) {
             /** @var CriteriaInterface $criterion */
-            $criterion = Instance::ensure($criterion, CriteriaInterface::class);
-            if ($criterion instanceof Model) {
+            $criterion = di\Instance::ensure($criterion, CriteriaInterface::class);
+            if ($criterion instanceof base\Model) {
                 $criterion->load($params);
                 if (!$criterion->validate()) {
                     continue;
@@ -52,9 +48,9 @@ class QueryFactory extends BaseObject
     }
 
     /**
-     * @param Query $query
+     * @param db\Query $query
      */
-    public function setQuery(Query $query)
+    public function setQuery(db\Query $query)
     {
         $this->query = $query;
     }
@@ -78,8 +74,8 @@ class QueryFactory extends BaseObject
     public function push($criterion): self
     {
         try {
-            $this->criteria[] = Instance::ensure($criterion, CriteriaInterface::class);
-        } catch (InvalidConfigException $exception) {
+            $this->criteria[] = di\Instance::ensure($criterion, CriteriaInterface::class);
+        } catch (base\InvalidConfigException $exception) {
             throw new \InvalidArgumentException($exception->getMessage(), $exception->getCode(), $exception);
         }
 
