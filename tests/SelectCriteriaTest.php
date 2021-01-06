@@ -40,8 +40,7 @@ class SelectCriteriaTest extends TestCase
         array $fields,
         db\Query $query,
         array $expectedSelectColumns
-    ): void
-    {
+    ): void {
         $criteria = new SelectCriteria($connection);
         $criteria->fields = $fields;
 

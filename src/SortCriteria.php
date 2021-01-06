@@ -1,21 +1,13 @@
-<?php
-
+<?php declare(strict_types=1);
 
 namespace Horat1us\Yii\Criteria;
 
-
 use Horat1us\Yii\Criteria\Entities\SortEntity;
 use Horat1us\Yii\Criteria\Interfaces\CriteriaInterface;
-use yii\base\Model;
-use yii\db\Connection;
-use yii\db\Query;
-use yii\validators\EachValidator;
+use yii\base;
+use yii\db;
 
-/**
- * Class SortCriteria
- * @package Horat1us\Yii\Criteria
- */
-class SortCriteria extends Model implements CriteriaInterface
+class SortCriteria extends base\Model implements CriteriaInterface
 {
     /** @var string|array|string[]|array[] */
     public $fields;
@@ -24,22 +16,21 @@ class SortCriteria extends Model implements CriteriaInterface
      * @var string[]
      * @see getSortKeys()
      */
-    public $sortKeys;
+    public array $sortKeys = [];
 
-    /** @var Connection */
-    protected $connection;
+    protected db\Connection $connection;
 
-    public function __construct(Connection $connection, array $config = [])
+    public function __construct(db\Connection $connection, array $config = [])
     {
         parent::__construct($config);
         $this->connection = $connection;
     }
 
-    public function rules()
+    public function rules(): array
     {
         return [
             ['fields', 'required',],
-            ['fields', EachValidator::class, 'rule' => [function ($field) {
+            ['fields', 'each', 'rule' => [function ($field) {
                 if (is_string($field) || (is_array($field) && array_key_exists('id', $field))) {
                     return;
                 }
@@ -48,12 +39,12 @@ class SortCriteria extends Model implements CriteriaInterface
         ];
     }
 
-    public function formName()
+    public function formName(): string
     {
         return 'SortCriteria';
     }
 
-    public function apply(Query $query): Query
+    public function apply(db\Query $query): db\Query
     {
         /** @var SortEntity[] $fields */
         $fields = array_map(function ($field): SortEntity {

@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Horat1us\Yii\Criteria;
 
@@ -7,22 +7,16 @@ use yii\base\Model;
 use yii\data\Pagination;
 use yii\db\Query;
 
-/**
- * Class PaginationCriteria
- * @package Horat1us\Yii\Criteria
- */
 class PaginationCriteria extends Model implements CriteriaInterface
 {
-    /** @var int */
-    public $pageSize;
+    public ?int $pageSize = null;
 
-    /** @var int */
-    public $page;
+    public ?int $page = null;
 
-    /** @var int[] */
+    /** @var int[]|\Closure|\Traversable */
     public $allowedPageSize;
 
-    public function rules()
+    public function rules(): array
     {
         $rules = [
             [['page', 'pageSize',], 'required',],

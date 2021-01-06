@@ -1,15 +1,10 @@
-<?php
-
+<?php declare(strict_types=1);
 
 namespace Horat1us\Yii\Criteria\Interfaces;
 
-use yii\db\Query;
+use yii\db;
 
-/**
- * Interface CriteriaInterface
- * @package Horat1us\Yii\Criteria\Interfaces
- */
 interface CriteriaInterface
 {
-    public function apply(Query $query): Query;
+    public function apply(db\Query $query): db\Query;
 }
