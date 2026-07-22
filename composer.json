@@ -35,7 +35,10 @@
   },
   "config": {
     "process-timeout": 1800,
-    "sort-packages": true
+    "sort-packages": true,
+    "allow-plugins": {
+      "yiisoft/yii2-composer": true
+    }
   },
   "scripts": {
     "lint": "./vendor/bin/phpcs --standard=PSR2 ./src ./tests",
