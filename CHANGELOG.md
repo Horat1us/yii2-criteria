@@ -1,5 +1,28 @@
 # Yii2 Criteria Changelog
 
+### 2.0.0 (provisional, not yet released)
+This version is not cut yet - it's staged on top of 1.1.0's `feature/select-criteria-keys` branch
+pending a decision on when/whether to release it and how consumers migrate. Listed separately
+from 1.1.0 because, unlike that release, this one changes runtime behavior for existing consumers
+without any code-level signal (no new required constructor argument, nothing PHP itself would
+flag) - semver rules that out as a minor/patch bump.
+- **BREAKING - SelectCriteria**: resolve fields exclusively through a new `selectKeys`
+  server-defined whitelist, matching `SortCriteria::$sortKeys` / `SearchCriteria::$searchKeys`.
+  Previously, fields were accepted from client input as-is (checked only against
+  `ActiveRecord::attributes()` for `ActiveQuery`, unchecked for plain `Query`), which broke on
+  ambiguous columns across joined tables and let a client-supplied table qualifier reach SQL
+  unvalidated. `selectKeys` also supports aliasing a field to a pre-authored expression, like
+  `sortKeys`/`searchKeys` already do.
+  Consumers must set `selectKeys` (or override `getSelectKeys()`) for any field to be selected;
+  without it, `apply()` drops every field, and Yii2 treats the resulting empty select as
+  `SELECT *` - silently more permissive than before, not less. **Every existing consumer of plain
+  `SelectCriteria::class` must be audited and updated before adopting this version.**
+- **BREAKING**: raise minimum PHP to 8.4 (from 7.4, which is EOL). Bump `phpunit/phpunit` from
+  `^9.5` to `^12.0` to match, and migrate tests off legacy `@dataProvider` docblocks to the
+  `#[DataProvider]` attribute PHPUnit 10+ requires (data provider methods must now be `static`).
+- CI: bump to `actions/checkout@v7`, `actions/cache@v6`, drop the `ubuntu-20.04` runner
+  (deprecated by GitHub) in favor of `ubuntu-latest`, and test PHP 8.4 only instead of 7.4/8.0.
+
 ### 1.1.0
 - Update PHP 7.4
 - Support for PHP 8.0
