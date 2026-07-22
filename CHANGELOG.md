@@ -1,11 +1,9 @@
 # Yii2 Criteria Changelog
 
-### 2.0.0 (provisional, not yet released)
-This version is not cut yet - it's staged on top of 1.1.0's `feature/select-criteria-keys` branch
-pending a decision on when/whether to release it and how consumers migrate. Listed separately
-from 1.1.0 because, unlike that release, this one changes runtime behavior for existing consumers
-without any code-level signal (no new required constructor argument, nothing PHP itself would
-flag) - semver rules that out as a minor/patch bump.
+### 2.0.0
+Listed separately from 1.1.0 because, unlike that release, this one changes runtime behavior for
+existing consumers without any code-level signal (no new required constructor argument, nothing
+PHP itself would flag) - semver rules that out as a minor/patch bump.
 - **BREAKING - SelectCriteria**: resolve fields exclusively through a new `selectKeys`
   server-defined whitelist, matching `SortCriteria::$sortKeys` / `SearchCriteria::$searchKeys`.
   Previously, fields were accepted from client input as-is (checked only against
