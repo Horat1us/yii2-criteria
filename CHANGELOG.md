@@ -17,6 +17,11 @@ flag) - semver rules that out as a minor/patch bump.
   without it, `apply()` drops every field, and Yii2 treats the resulting empty select as
   `SELECT *` - silently more permissive than before, not less. **Every existing consumer of plain
   `SelectCriteria::class` must be audited and updated before adopting this version.**
+- **BREAKING**: raise minimum PHP to 8.4 (from 7.4, which is EOL). Bump `phpunit/phpunit` from
+  `^9.5` to `^12.0` to match, and migrate tests off legacy `@dataProvider` docblocks to the
+  `#[DataProvider]` attribute PHPUnit 10+ requires (data provider methods must now be `static`).
+- CI: bump to `actions/checkout@v7`, `actions/cache@v6`, drop the `ubuntu-20.04` runner
+  (deprecated by GitHub) in favor of `ubuntu-latest`, and test PHP 8.4 only instead of 7.4/8.0.
 
 ### 1.1.0
 - Update PHP 7.4

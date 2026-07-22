@@ -3,18 +3,17 @@
 namespace Horat1us\Yii\Criteria\Tests;
 
 use Horat1us\Yii\Criteria\SelectCriteria;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use yii\db;
 
 class SelectCriteriaTest extends TestCase
 {
-    public function applyProvider(): iterable
+    public static function applyProvider(): iterable
     {
-        $connection = $this->mockConnection();
-
         // Only fields present in selectKeys (as a value) are selected as plain columns; anything else is dropped
         yield [
-            $connection,
             ['ColumnA', 'ColumnB', 'ColumnC'],
             ['ColumnA', 'ColumnB'],
             ['qColumnA' => 'qColumnA', 'qColumnB' => 'qColumnB'],
@@ -23,7 +22,6 @@ class SelectCriteriaTest extends TestCase
         // A selectKeys entry keyed by field name is a server-authored expression, aliased back
         // to the client-requested field name
         yield [
-            $connection,
             ['alias'],
             ['alias' => 'table.real_column'],
             ['qalias' => 'table.real_column'],
@@ -33,23 +31,17 @@ class SelectCriteriaTest extends TestCase
         // array, which Yii's query builder treats as "SELECT *" - same as if this criterion had
         // never been applied at all, never as "select nothing"
         yield [
-            $connection,
             ['ColumnC'],
             ['ColumnA', 'ColumnB'],
             [],
         ];
     }
 
-    /**
-     * @dataProvider applyProvider
-     */
-    public function testApplyQuery(
-        db\Connection $connection,
-        array $fields,
-        array $selectKeys,
-        array $expectedSelect
-    ): void {
-        $criteria = new SelectCriteria($connection);
+    #[DataProvider('applyProvider')]
+    #[AllowMockObjectsWithoutExpectations]
+    public function testApplyQuery(array $fields, array $selectKeys, array $expectedSelect): void
+    {
+        $criteria = new SelectCriteria($this->mockConnection());
         $criteria->fields = $fields;
         $criteria->selectKeys = $selectKeys;
 
@@ -57,21 +49,19 @@ class SelectCriteriaTest extends TestCase
         $this->assertEquals($expectedSelect, $resultQuery->select);
     }
 
-    public function validationProvider(): array
+    public static function validationProvider(): array
     {
-        $connection = $this->createPartialMock(db\Connection::class, []);
         return [
-            [$connection, [1,2,3], false,],
-            [$connection, [], false,],
-            [$connection, ['col1', 'col2'], true,],
+            [[1,2,3], false,],
+            [[], false,],
+            [['col1', 'col2'], true,],
         ];
     }
 
-    /**
-     * @dataProvider validationProvider
-     */
-    public function testValidation(db\Connection $connection, array $fields, bool $expectedResult): void
+    #[DataProvider('validationProvider')]
+    public function testValidation(array $fields, bool $expectedResult): void
     {
+        $connection = $this->createStub(db\Connection::class);
         $criteria = new SelectCriteria($connection);
         $criteria->fields = $fields;
         $this->assertEquals($expectedResult, $criteria->validate());
@@ -79,15 +69,18 @@ class SelectCriteriaTest extends TestCase
 
     private function mockConnection(): db\Connection
     {
+        // createPartialMock (not createStub) is required here: it overrides only the listed
+        // methods and leaves yii\base\Component::__get() real, which is what makes the
+        // $connection->schema magic property delegate to the overridden getSchema() below.
+        // Not every case calls quoteSimpleColumnName (e.g. when nothing matches selectKeys),
+        // so these are plain stubs rather than mock expectations.
         $schema = $this->createPartialMock(db\sqlite\Schema::class, ['quoteSimpleColumnName']);
         $schema
-            ->expects($this->atLeastOnce())
             ->method('quoteSimpleColumnName')
             ->willReturnCallback(fn(string $input) => "q{$input}");
 
         $connection = $this->createPartialMock(db\Connection::class, ['getSchema']);
         $connection
-            ->expects($this->atLeastOnce())
             ->method('getSchema')
             ->willReturn($schema);
 

@@ -3,9 +3,9 @@
   "description": "Criteria implementation for Yii2",
   "type": "library",
   "require": {
-    "php": ">=7.4",
+    "php": ">=8.4",
     "ext-pdo": "*",
-    "phpunit/phpunit": "^9.5",
+    "phpunit/phpunit": "^12.0",
     "yiisoft/yii2": "^2.0.35"
   },
   "require-dev": {

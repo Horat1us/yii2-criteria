@@ -3,11 +3,12 @@
 namespace Horat1us\Yii\Criteria\Tests;
 
 use Horat1us\Yii\Criteria\PaginationCriteria;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
 class PaginationCriteriaTest extends TestCase
 {
-    public function validationProvider(): array
+    public static function validationProvider(): array
     {
         return [
             [new PaginationCriteria(), null, false,],
@@ -19,9 +20,7 @@ class PaginationCriteriaTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider validationProvider
-     */
+    #[DataProvider('validationProvider')]
     public function testValidation(PaginationCriteria $criteria, ?array $attributes, bool $expectedResult): void
     {
         $this->assertEquals($criteria->validate($attributes), $expectedResult);
