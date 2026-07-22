@@ -1,5 +1,10 @@
 # Yii2 Criteria Changelog
 
+### 2.0.1
+- Fix: `phpunit/phpunit` was mistakenly listed under `require` instead of `require-dev` in 2.0.0,
+  forcing PHPUnit 12 onto every consumer's production dependency tree and conflicting with any
+  consumer pinning its own `phpunit/phpunit` version for its own tests.
+
 ### 2.0.0
 Listed separately from 1.1.0 because, unlike that release, this one changes runtime behavior for
 existing consumers without any code-level signal (no new required constructor argument, nothing
