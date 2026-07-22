@@ -53,6 +53,7 @@ print_r($record->id, $_GET['IdCriteria']['id']); // true
 ## Pre-cooked criteria
 - [SortCriteria](./docs/SortCriteria.md)
 - [SearchCriteria](./docs/SearchCriteria.md)
+- [SelectCriteria](./docs/SelectCriteria.md)
 - [PaginationCriteria](./docs/PaginationCriteria.md)
 
 ## Factories

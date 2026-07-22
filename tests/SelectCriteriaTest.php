@@ -11,24 +11,32 @@ class SelectCriteriaTest extends TestCase
     public function applyProvider(): iterable
     {
         $connection = $this->mockConnection();
-        $fields = ['ColumnA', 'ColumnB'];
-        $expectedSelectColumns = ['qColumnA', 'qColumnB'];
-        // Simple quoting columns
-        yield [$connection, $fields, new db\Query, $expectedSelectColumns];
 
-        // Filtering and quoting columns when db\ActiveQuery used
-        $record = new class extends db\ActiveRecord {
-            public function attributes(): array
-            {
-                return ['ColumnA', 'ColumnB'];
-            }
-        };
-
+        // Only fields present in selectKeys (as a value) are selected as plain columns; anything else is dropped
         yield [
             $connection,
-            [...$fields, 'ColumnC'], // our record mock does not contain ColumnC attribute, so it must be excluded
-            new db\ActiveQuery(get_class($record)),
-            $expectedSelectColumns
+            ['ColumnA', 'ColumnB', 'ColumnC'],
+            ['ColumnA', 'ColumnB'],
+            ['qColumnA' => 'qColumnA', 'qColumnB' => 'qColumnB'],
+        ];
+
+        // A selectKeys entry keyed by field name is a server-authored expression, aliased back
+        // to the client-requested field name
+        yield [
+            $connection,
+            ['alias'],
+            ['alias' => 'table.real_column'],
+            ['qalias' => 'table.real_column'],
+        ];
+
+        // Nothing requested matches selectKeys: everything is dropped, select() gets an empty
+        // array, which Yii's query builder treats as "SELECT *" - same as if this criterion had
+        // never been applied at all, never as "select nothing"
+        yield [
+            $connection,
+            ['ColumnC'],
+            ['ColumnA', 'ColumnB'],
+            [],
         ];
     }
 
@@ -38,16 +46,15 @@ class SelectCriteriaTest extends TestCase
     public function testApplyQuery(
         db\Connection $connection,
         array $fields,
-        db\Query $query,
-        array $expectedSelectColumns
+        array $selectKeys,
+        array $expectedSelect
     ): void {
         $criteria = new SelectCriteria($connection);
         $criteria->fields = $fields;
+        $criteria->selectKeys = $selectKeys;
 
-        $resultQuery = $criteria->apply($query);
-        $this->assertSame($query, $resultQuery);
-
-        $this->assertEquals(array_combine($expectedSelectColumns, $expectedSelectColumns), $resultQuery->select);
+        $resultQuery = $criteria->apply(new db\Query);
+        $this->assertEquals($expectedSelect, $resultQuery->select);
     }
 
     public function validationProvider(): array

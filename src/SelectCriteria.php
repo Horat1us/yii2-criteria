@@ -11,6 +11,13 @@ class SelectCriteria extends base\Model implements CriteriaInterface
     /** @var string[] */
     public ?array $fields = null;
 
+    /**
+     * @var array<int|string, string> with value as a selectable column/expression, or key as the
+     *      field name the client may request and value as the real column/expression to select for it
+     * @see getSelectKeys()
+     */
+    public array $selectKeys = [];
+
     protected db\Connection $connection;
 
     public function __construct(db\Connection $connection, array $config = [])
@@ -29,25 +36,28 @@ class SelectCriteria extends base\Model implements CriteriaInterface
 
     public function apply(db\Query $query): db\Query
     {
-        $fields = $this->fields;
+        $selectKeys = $this->getSelectKeys();
 
-        if ($query instanceof db\ActiveQuery) {
-            /** @var db\ActiveRecord $record */
-            $record = new $query->modelClass;
-            $attributes = $record->attributes();
-            $fields = array_filter(
-                $fields,
-                function (string $field) use ($attributes) {
-                    return in_array($field, $attributes)
-                        || in_array(explode(".", $field, 2)[1] ?? $field, $attributes);
-                }
-            );
+        $resolved = [];
+        foreach ($this->fields as $field) {
+            if (array_key_exists($field, $selectKeys)) {
+                $expression = $selectKeys[$field];
+                $alias = $this->connection->schema->quoteSimpleColumnName($field);
+                $resolved[] = "{$expression} AS {$alias}";
+            } elseif (in_array($field, $selectKeys, true)) {
+                $resolved[] = $this->connection->schema->quoteSimpleColumnName($field);
+            }
         }
 
-        $schema = $this->connection->schema;
-        return $query->select(array_map(
-            fn(string $field): string => $schema->quoteSimpleColumnName($field),
-            $fields
-        ));
+        return $query->select($resolved);
+    }
+
+    /**
+     * @return array<int|string, string> with value as a selectable column/expression, or key as a
+     *         client-facing field alias and value as the real column/expression to select for it
+     */
+    protected function getSelectKeys(): array
+    {
+        return $this->selectKeys;
     }
 }
