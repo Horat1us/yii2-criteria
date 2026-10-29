@@ -62,7 +62,7 @@ print_r($record->id, $_GET['IdCriteria']['id']); // true
 
 ## Tips
 To set default params for criteria (for example, PaginationCriteria) configure your `yii\db\Container`
-in `bootstrap.php` file:
+in `bootstrap.php` file. PaginationCriteria also falls back to these `page` and `pageSize` on invalid input:
 ```php
 <?php
 
@@ -73,7 +73,7 @@ Yii::$container->set(
     [
         'class' => PaginationCriteria::class,
         
-        'page' => 1,
+        'page' => 0,
         'pageSize' => 10,
         
         'allowedPageSize' => [1, 5, 10,],

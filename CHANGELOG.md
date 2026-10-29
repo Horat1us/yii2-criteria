@@ -1,5 +1,20 @@
 # Yii2 Criteria Changelog
 
+### 3.0.0
+- **BREAKING - PaginationCriteria**: invalid `page`/`pageSize` input (non-integer, negative page,
+  page size below 1, above `maxPageSize` or not in `allowedPageSize`) is replaced by the `page` and
+  `pageSize` configured at construction instead of failing validation. A failed criterion is
+  skipped by `QueryFactory`, so `pageSize: 3` against an allow-list used to return every row of the
+  query. Without configured `page` and `pageSize` invalid input still fails validation as before.
+- **BREAKING - PaginationCriteria**: `page` and `pageSize` are typed `mixed` instead of `?int`:
+  they hold raw client input until validated, and `load()` threw `TypeError` on non-numeric or
+  array input (`page=x`) since 2.0.0. A successful validation casts both to `int`. Subclasses
+  redeclaring these properties (e.g. untyped, to set other defaults) must declare them `mixed`;
+  configuring `page`/`pageSize` instead of redeclaring needs no change.
+- PaginationCriteria: add `maxPageSize` to cap the page size without an allow-list.
+- Docs: fix the `QueryFactory` constructor call in the PaginationCriteria example and the
+  default `page` in the README container example (pages are 0-based).
+
 ### 2.0.1
 - Fix: `phpunit/phpunit` was mistakenly listed under `require` instead of `require-dev` in 2.0.0,
   forcing PHPUnit 12 onto every consumer's production dependency tree and conflicting with any
