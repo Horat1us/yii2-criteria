@@ -11,6 +11,9 @@
   array input (`page=x`) since 2.0.0. A successful validation casts both to `int`. Subclasses
   redeclaring these properties (e.g. untyped, to set other defaults) must declare them `mixed`;
   configuring `page`/`pageSize` instead of redeclaring needs no change.
+- **BREAKING - PaginationCriteria**: overrides `init(): void` and `afterValidate(): void` (it snapshots the
+  configured `page`/`pageSize` and applies the fallback there). Subclasses overriding either method must
+  declare `: void` too; an override without a return type is a fatal error.
 - PaginationCriteria: add `maxPageSize` to cap the page size without an allow-list.
 - Docs: fix the `QueryFactory` constructor call in the PaginationCriteria example and the
   default `page` in the README container example (pages are 0-based).
